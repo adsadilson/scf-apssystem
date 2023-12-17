@@ -10,4 +10,6 @@ public class ScfApssystemApplication {
 		SpringApplication.run(ScfApssystemApplication.class, args);
 	}
 
+
+
 }

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -17,14 +18,14 @@ import java.util.Optional;
 public class EmpresaService {
 
     private final EmpresaRepository repository;
-    private final EmpresaMapper empresaMapper;
 
-    public EmpresaDTO create(EmpresaDTO dto) {
+
+    public Empresa create(EmpresaDTO dto) {
         validaSeAEmpresaJaEstaCadastrada(dto);
-        Empresa empresa = empresaMapper.toEntity(dto);
+        Empresa empresa = EmpresaMapper.toEntity(dto);
         Empresa empresaSave = repository.save(empresa);
         log.info("Registro cadastrado com sucesso!");
-        return empresaMapper.toDto(empresaSave);
+        return empresaSave;
     }
 
     private void validaSeAEmpresaJaEstaCadastrada(EmpresaDTO obj) {
@@ -37,6 +38,14 @@ public class EmpresaService {
             throw new NegocioException(
                     String.format("Registro já cadastrado com esse [cnpj/cpf] %s!", obj.getCnpjCpf()));
         }
+    }
+
+    public Empresa buscarPorId(UUID id) {
+        var empresa = repository.findById(id);
+        if (empresa.isPresent()) {
+            return empresa.get();
+        }
+        throw new NegocioException("Empresa não encontrado.");
     }
 
 
